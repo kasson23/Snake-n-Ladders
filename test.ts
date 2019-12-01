@@ -1,4 +1,4 @@
-export class SnakesLadders {
+class SnakesLadders {
     public board = new Board();
     public player1 = new Player(true, this.board.start);
     public player2 = new Player(false, this.board.start);
@@ -19,6 +19,10 @@ export class SnakesLadders {
             this.player1.boardLocation = this.board.checkIfNumberIsSlide(this.player1.boardLocation);
 
             // check if sqaure == 100
+            if (this.player1.boardLocation > 100) {
+                this.player1.boardLocation = this.board.checkIfLocIsWinnerOrOver(this.player1.boardLocation, (die1 + die2))
+            }
+
             if (this.player1.boardLocation == 100) {
                 output = `Player ${whosTurn} Wins!`;
             }
@@ -42,6 +46,11 @@ export class SnakesLadders {
             // check if it is a available slide - if so, move to new square
             this.player2.boardLocation = this.board.checkIfNumberIsSlide(this.player2.boardLocation);
 
+            // check if sqaure > 100
+            if (this.player2.boardLocation > 100) {
+                this.player2.boardLocation = this.board.checkIfLocIsWinnerOrOver(this.player2.boardLocation, (die1 +die2))
+            }
+
             // check if sqaure == 100
             if (this.player2.boardLocation == 100) {
                 output = `Player ${whosTurn} Wins!`;
@@ -53,7 +62,7 @@ export class SnakesLadders {
             // else change turn and reroll
             else {
                 this.player2.turn = false;
-                this.player1.turn == true;
+                this.player1.turn = true;
                 output = `Player ${whosTurn} is on square ${this.player2.boardLocation}`; 
             }
             return output;
@@ -61,7 +70,7 @@ export class SnakesLadders {
   }
 
 }
-export class Board {
+class Board {
     public start: number = 0;
     public end: number = 100;
     public avaSlides: number[][] = [[2, 38], [7, 14], [8, 31], [15, 26], [16, 6], [21, 42], [28, 84], [36, 44], [46, 25], [49, 11], [51, 67], [62, 19], [64, 60], [71, 91], [74, 53], [78, 98], [87, 94], [92, 88], [95, 75], [99, 80]];
@@ -74,9 +83,13 @@ export class Board {
         }
         return returnNum;
     }
+    public checkIfLocIsWinnerOrOver(loc: number, numRolled: number): number {
+        let newL = numRolled - (100 - loc); 
+        return 100 - newL;
+    }
 }
 
-export class Player {
+class Player {
     public turn: boolean;
     public boardLocation: number = 1;
     public constructor(t: boolean, loc:number) {
@@ -88,3 +101,8 @@ export class Player {
 
 let game = new SnakesLadders();
 console.log(game.play(1, 1));
+console.log(game.play(1, 5));
+console.log(game.play(6, 2));
+console.log(game.play(1, 1));
+
+
